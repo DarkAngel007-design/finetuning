@@ -13,7 +13,8 @@ model_name = "allenai/OLMo-7B"
 
 tokenizer = AutoTokenizer.from_pretrained(
     model_name,
-    use_fast = False
+    use_fast = False,
+    trust_remote_code=True
 )
 
 model = AutoModelCausalLM.from_pretrained(
@@ -21,7 +22,8 @@ model = AutoModelCausalLM.from_pretrained(
     load_in_8bit=True,
     device_map = "auto",
     torch_dtype = torch.float16,
-    low_cpu_mem_usage=True
+    low_cpu_mem_usage=True,
+    trust_remote_code=True
 )
 
 lora_config = LoraConfig(
@@ -85,3 +87,4 @@ trainer = Trainer(
 )
 
 trainer.train()
+
