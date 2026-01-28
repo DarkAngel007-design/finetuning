@@ -19,7 +19,6 @@ tokenizer = AutoTokenizer.from_pretrained(
 
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
-    load_in_8bit=True,
     device_map = "auto",
     torch_dtype = torch.float16,
     low_cpu_mem_usage=True,
@@ -38,6 +37,7 @@ lora_config = LoraConfig(
 model = get_peft_model(model, lora_config)
 model.print_trainable_parameters()
 
+model.gradient_checkpointing_enable()
 model.config.use_cache = False
 
 dataset = load_dataset(
@@ -60,11 +60,14 @@ tokenized = dataset.map(
     batched=True,
     remove_columns=["text"]
 )
+tokenizer.pad_token = tokenizer.eos_token
+model.config.pad_token_id = tokenizer.eos_token_id
+
 
 training_args = TrainingArguments(
     output_dir="./olmo-bbbp",
     per_device_train_batch_size=1,
-    gradient_accumulation_steps=8,
+    gradient_accumulation_steps=16,
     learning_rate=2e-4,
     max_steps=50,
     logging_steps=10,
@@ -87,6 +90,9 @@ trainer = Trainer(
 )
 
 trainer.train()
+model.save_pretrained("olmo-bbbp-lora")
+tokenizer.save_pretrained("olmo-bbbp-lora")
+
 
 
 
