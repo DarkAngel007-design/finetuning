@@ -19,7 +19,7 @@ tokenizer = AutoTokenizer.from_pretrained(
 
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
-    device_map = "auto",
+    device_map = {"": 0},
     torch_dtype = torch.float16,
     low_cpu_mem_usage=True,
     trust_remote_code=True
@@ -92,6 +92,7 @@ trainer = Trainer(
 trainer.train()
 model.save_pretrained("olmo-bbbp-lora")
 tokenizer.save_pretrained("olmo-bbbp-lora")
+
 
 
 
