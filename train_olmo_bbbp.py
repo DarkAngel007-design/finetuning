@@ -94,6 +94,9 @@ trainer = Trainer(
 trainer.train()
 model.save_pretrained("olmo-bbbp-lora")
 tokenizer.save_pretrained("olmo-bbbp-lora")
+trainer.save_model("./olmo-1b-bbbp-lora")
+
+
 
 
 
