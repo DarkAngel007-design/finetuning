@@ -14,6 +14,7 @@ tokenizer = AutoTokenizer.from_pretrained(
     trust_remote_code=True,
     use_fast=False
 )
+tokenizer.model_input_names = ["input_ids", "attention_mask"]
 
 model = AutoModelForCausalLM.from_pretrained(
     BASE_MODEL,
@@ -28,14 +29,17 @@ model.eval()
 val_df  = pd.read_csv(VAL_CSV)
 
 def predict_yes_probability(prompt: str) -> float:
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    inputs = tokenizer(prompt, return_tensors="pt")
+    inputs = {k: v.to(model.device) for k, v in inputs.items()}
+    inputs.pop("token_type_ids", None)
 
     with torch.no_grad():
         outputs = model(**inputs)
         logits = outputs.logits[:, -1, :]
 
-    yes_id = tokenizer.encode("Yes", add_special_tokens=False)[0]
-    no_id = tokenizer.encode("No", add_special_tokens=False)[0]
+    yes_id = tokenizer.encode(" Yes", add_special_tokens=False)[0]
+    no_id  = tokenizer.encode(" No", add_special_tokens=False)[0]
+
 
     probs = torch.softmax(logits, dim=1)
 
