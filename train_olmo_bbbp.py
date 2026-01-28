@@ -77,7 +77,8 @@ training_args = TrainingArguments(
     save_steps=50,
     fp16=True,
     optim="paged_adamw_8bit",
-    report_to="none"
+    report_to="none",
+    ddp_find_unused_parameters=False
 )
 
 data_collator = DataCollatorForLanguageModeling(
@@ -96,6 +97,7 @@ trainer = Trainer(
 trainer.train()
 model.save_pretrained("olmo-bbbp-lora")
 tokenizer.save_pretrained("olmo-bbbp-lora")
+
 
 
 
