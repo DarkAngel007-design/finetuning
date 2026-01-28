@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 BASE_MODEL = "allenai/OLMo-1B"
 LORA_PATH = "./olmo-1b-bbbp-lora"
-VAL_CSV = "bbbp_val.csv"
+VAL_CSV = "bbbp_val_labels.csv"
 
 tokenizer = AutoTokenizer.from_pretrained(
     BASE_MODEL,
