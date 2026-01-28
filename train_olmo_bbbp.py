@@ -19,7 +19,7 @@ tokenizer = AutoTokenizer.from_pretrained(
 
 model = AutoModelCausalLM.from_pretrained(
     model_name,
-    load_in_4bit=True,
+    load_in_8bit=True,
     device_map = "auto",
     torch_dytpe = torch.float16,
     low_cpu_mem_usage=True
@@ -82,3 +82,4 @@ trainer = Trainer(
     eval_dataset=tokenized["validation"],
     data_collator=data_collator
 )
+
