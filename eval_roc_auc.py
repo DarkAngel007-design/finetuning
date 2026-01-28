@@ -47,7 +47,7 @@ def predict_yes_probability(prompt: str) -> float:
 scores = []
 labels = []
 
-for _, row in tqdm(val_df.iterrows, total=len(val_df)):
+for _, row in tqdm(val_df.iterrows(), total=len(val_df)):
     prompt = (
         "Is the following molecule BBB permeable?\n"
         f"SMILES: {row['smiles']}\n"
