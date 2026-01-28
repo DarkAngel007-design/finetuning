@@ -2,7 +2,6 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from format_instructions import format_example
 
-
 BBBP_URL = "https://deepchemdata.s3-us-west-1.amazonaws.com/datasets/BBBP.csv"
 
 
@@ -46,7 +45,10 @@ if __name__ == "__main__":
 
     train_df[["text"]].to_csv("bbbp_train_instruct.csv", index=False)
     val_df[["text"]].to_csv("bbbp_val_instruct.csv", index=False)
+    val_df[["smiles", "label"]].to_csv("bbbp_val_labels.csv", index=False)
+
 
     print("Saved BBBP instruction CSVs")
+
 
 
