@@ -1,9 +1,10 @@
 import deepchem as dc
 import pandas as pd
+from deepchem.feat import RawFeaturizer
 
 def load_bbbp():
     tasks, datasets, transformers = dc.molnet.load_bbbp(
-        featurizer=None,      # 🔥 IMPORTANT FIX
+        featurizer=RawFeaturizer(),   # REQUIRED but ignored
         split="scaffold",
         reload=True
     )
@@ -13,8 +14,9 @@ def load_bbbp():
 if __name__ == "__main__":
     val = load_bbbp()
 
+    # IMPORTANT: use ids, NOT X
     val_df = pd.DataFrame({
-        "smiles": val.ids,                 # SMILES live in ids
+        "smiles": val.ids,
         "label": val.y.flatten().astype(int)
     })
 
