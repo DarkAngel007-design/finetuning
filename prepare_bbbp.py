@@ -38,7 +38,7 @@ if __name__ == "__main__":
     axis=1
 )
 
-val_df["text"] = val_df.apply(
+    val_df["text"] = val_df.apply(
     lambda row: format_example(row["smiles"], row["label"]),
     axis=1
 )
@@ -48,4 +48,5 @@ val_df["text"] = val_df.apply(
     val_df[["text"]].to_csv("bbbp_val_instruct.csv", index=False)
 
     print("Saved BBBP instruction CSVs")
+
 
