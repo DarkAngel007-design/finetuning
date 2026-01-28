@@ -1,5 +1,6 @@
 import deepchem as dc
 import pandas as pd
+from format_instructions import format_example
 
 def load_bbbp():
     tasks, datasets, transformers = dc.molnet.load_bbbp(
@@ -17,10 +18,15 @@ def to_dataframe (dc_dataset):
 
 if __name__ =="__main__":
     train, val, test  = load_bbbp()
+    
     train_df = to_dataframe(train)
     val_df = to_dataframe(val)
 
-    train_df.to_csv("bbbp_train.csv", index = False)
-    val_df.to_csv("bbbp_val.csv", index = False)
+    train_df["text"] = train_df.apply(format_example, axis=1)
+    val_df["text"] = val_df.apply(format_example, axis=1)
 
-    print("Saved BBBP CSVs")
+    train_df[["text"]].to_csv("bbbp_train_instruct.csv", index = False)
+    val_df[["text"]].to_csv("bbbp_val_instruct.csv", index = False)
+
+
+    print("Saved BBBP instruction CSVs")
