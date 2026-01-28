@@ -33,10 +33,19 @@ def load_bbbp_raw():
 if __name__ == "__main__":
     train_df, val_df = load_bbbp_raw()
 
-    train_df["text"] = train_df.apply(format_example, axis=1)
-    val_df["text"] = val_df.apply(format_example, axis=1)
+    train_df["text"] = train_df.apply(
+    lambda row: format_example(row["smiles"], row["label"]),
+    axis=1
+)
+
+val_df["text"] = val_df.apply(
+    lambda row: format_example(row["smiles"], row["label"]),
+    axis=1
+)
+
 
     train_df[["text"]].to_csv("bbbp_train_instruct.csv", index=False)
     val_df[["text"]].to_csv("bbbp_val_instruct.csv", index=False)
 
     print("Saved BBBP instruction CSVs")
+
