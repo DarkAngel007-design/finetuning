@@ -4,7 +4,8 @@ from transformers import (
     AutoModelForCausalLM,
     TrainingArguments,
     Trainer,
-    DataCollatorForLanguageModeling
+    DataCollatorForLanguageModeling,
+    BitsAndBytesConfig
 )
 from peft import LoraConfig, get_peft_model
 from datasets import load_dataset
@@ -75,6 +76,7 @@ training_args = TrainingArguments(
     logging_steps=10,
     save_steps=50,
     fp16=True,
+    optim="paged_adamw_8bit",
     report_to="none"
 )
 
@@ -94,6 +96,7 @@ trainer = Trainer(
 trainer.train()
 model.save_pretrained("olmo-bbbp-lora")
 tokenizer.save_pretrained("olmo-bbbp-lora")
+
 
 
 
