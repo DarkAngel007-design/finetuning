@@ -8,6 +8,8 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model
 from datasets import load_dataset
+import os
+os.environ["PYTORCH_ALLOC_CONF"] = "expandable_segments:True"
 
 model_name = "allenai/OLMo-7B"
 
@@ -26,8 +28,8 @@ model = AutoModelForCausalLM.from_pretrained(
 )
 
 lora_config = LoraConfig(
-    r=8,
-    lora_alpha=32,
+    r=4,
+    lora_alpha=16,
     target_modules="all-linear",
     lora_dropout=0.05,
     bias="none",
@@ -52,7 +54,7 @@ def tokenize(batch):
     return tokenizer(
         batch["text"],
         truncation=True,
-        max_length=256
+        max_length=128
     )
 
 tokenized = dataset.map(
@@ -92,6 +94,7 @@ trainer = Trainer(
 trainer.train()
 model.save_pretrained("olmo-bbbp-lora")
 tokenizer.save_pretrained("olmo-bbbp-lora")
+
 
 
 
