@@ -5,14 +5,12 @@ from transformers import (
     TrainingArguments,
     Trainer,
     DataCollatorForLanguageModeling,
-    BitsAndBytesConfig
 )
 from peft import LoraConfig, get_peft_model
 from datasets import load_dataset
-import os
-os.environ["PYTORCH_ALLOC_CONF"] = "expandable_segments:True"
 
-model_name = "allenai/OLMo-7B"
+
+model_name = "allenai/OLMo-1B"
 
 tokenizer = AutoTokenizer.from_pretrained(
     model_name,
@@ -22,15 +20,15 @@ tokenizer = AutoTokenizer.from_pretrained(
 
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
-    device_map = {"": 0},
+    device_map = "auto",
     torch_dtype = torch.float16,
     low_cpu_mem_usage=True,
     trust_remote_code=True
 )
 
 lora_config = LoraConfig(
-    r=4,
-    lora_alpha=16,
+    r=8,
+    lora_alpha=32,
     target_modules="all-linear",
     lora_dropout=0.05,
     bias="none",
@@ -55,7 +53,7 @@ def tokenize(batch):
     return tokenizer(
         batch["text"],
         truncation=True,
-        max_length=128
+        max_length=256
     )
 
 tokenized = dataset.map(
@@ -78,7 +76,6 @@ training_args = TrainingArguments(
     fp16=True,
     optim="paged_adamw_8bit",
     report_to="none",
-    ddp_find_unused_parameters=False
 )
 
 data_collator = DataCollatorForLanguageModeling(
@@ -97,6 +94,7 @@ trainer = Trainer(
 trainer.train()
 model.save_pretrained("olmo-bbbp-lora")
 tokenizer.save_pretrained("olmo-bbbp-lora")
+
 
 
 
