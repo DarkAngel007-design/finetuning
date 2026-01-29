@@ -1,5 +1,13 @@
 import os
+os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64'
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
+
+import sys
+if 'bitsandbytes' in sys.modules:
+    del sys.modules['bitsandbytes']
+
+
 import torch
 from transformers import (
     AutoTokenizer,
@@ -111,6 +119,7 @@ trainer.train()
 model.save_pretrained("./olmo-1b-bbbp-qlora")
 tokenizer.save_pretrained("./olmo-1b-bbbp-qlora")
 trainer.save_model("./olmo-1b-bbbp-qlora")
+
 
 
 
