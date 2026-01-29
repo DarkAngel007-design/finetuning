@@ -67,7 +67,7 @@ def tokenize(batch):
     return tokenizer(
         batch["text"],
         truncation=True,
-        max_length=256
+        max_length=128
     )
 
 tokenized = dataset.map(
@@ -84,7 +84,7 @@ training_args = TrainingArguments(
     per_device_train_batch_size=1,
     gradient_accumulation_steps=16,
     learning_rate=1e-4,
-    max_steps=200,
+    max_steps=50,
     logging_steps=10,
     save_steps=50,
     eval_strategy="steps",
