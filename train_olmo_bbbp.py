@@ -1,6 +1,6 @@
 import os
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-
+os.environ["TRANSFORMERS_NO_TORCHAO"] = "1"
 
 import torch
 from transformers import (
@@ -114,6 +114,7 @@ trainer.train()
 model.save_pretrained("./olmo-1b-bbbp-qlora")
 tokenizer.save_pretrained("./olmo-1b-bbbp-qlora")
 trainer.save_model("./olmo-1b-bbbp-qlora")
+
 
 
 
