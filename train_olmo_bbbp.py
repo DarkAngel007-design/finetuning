@@ -95,6 +95,8 @@ training_args = TrainingArguments(
     optim="paged_adamw_8bit",
     report_to="none",
     gradient_checkpointing=True,
+    lr_scheduler_type="cosine",
+    warmup_ratio=0.1,
 )
 
 data_collator = DataCollatorForLanguageModeling(
