@@ -1,3 +1,5 @@
+import os
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 import torch
 from transformers import (
     AutoTokenizer,
@@ -9,8 +11,6 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from datasets import load_dataset
-import os
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 
 
@@ -25,7 +25,7 @@ tokenizer = AutoTokenizer.from_pretrained(
 bnb_config = BitsAndBytesConfig(
     load_in_4bit=True,
     bnb_4bit_quant_type="nf4",
-    bnb_4bit_compute_dtype=torch.float16,
+    bnb_4bit_compute_dtype=torch.float32,
     bnb_4bit_use_double_quant=True,
 )
 
@@ -89,8 +89,8 @@ training_args = TrainingArguments(
     save_steps=50,
     eval_strategy="steps",
     eval_steps=50,
-    fp16=True,
-    optim="paged_adamw_8bit",
+    fp16=False,
+    optim="adamw_torch",
     report_to="none",
 )
 
