@@ -1,11 +1,5 @@
 import os
-os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda/lib64:/usr/local/nvidia/lib:/usr/local/nvidia/lib64'
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-
-
-import sys
-if 'bitsandbytes' in sys.modules:
-    del sys.modules['bitsandbytes']
 
 
 import torch
@@ -30,9 +24,10 @@ tokenizer = AutoTokenizer.from_pretrained(
 )
 
 bnb_config = BitsAndBytesConfig(
-    load_in_8bit=True,
-    llm_int8_threshold=6.0,
-    llm_int8_has_fp16_weight=False,
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.float16,
+    bnb_4bit_use_double_quant=True,
 )
 
 model = AutoModelForCausalLM.from_pretrained(
@@ -41,7 +36,7 @@ model = AutoModelForCausalLM.from_pretrained(
     device_map = {"": 0},
     low_cpu_mem_usage=True,
     trust_remote_code=True,
-    torch_dtype=torch.bfloat16,
+    torch_dtype=torch.float16,
 )
 
 model = prepare_model_for_kbit_training(model)
