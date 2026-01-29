@@ -23,10 +23,8 @@ tokenizer = AutoTokenizer.from_pretrained(
 )
 
 bnb_config = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_quant_type="nf4",
-    bnb_4bit_compute_dtype=torch.bfloat16,
-    bnb_4bit_use_double_quant=True,
+    load_in_8bit=True,
+    llm_int8_threshold=6.0,
 )
 
 model = AutoModelForCausalLM.from_pretrained(
@@ -82,16 +80,15 @@ model.config.pad_token_id = tokenizer.eos_token_id
 
 training_args = TrainingArguments(
     output_dir="./olmo-1b-bbbp-qlora",
-    per_device_train_batch_size=1,
-    gradient_accumulation_steps=16,
+    per_device_train_batch_size=2,
+    gradient_accumulation_steps=8,
     learning_rate=1e-4,
     max_steps=50,
     logging_steps=10,
     save_steps=50,
     eval_strategy="steps",
     eval_steps=50,
-    fp16=False,
-    bf16=False,
+    fp16=True,
     optim="adamw_torch",
     report_to="none",
 )
