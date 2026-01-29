@@ -9,6 +9,9 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from datasets import load_dataset
+import os
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
 
 
 model_name = "allenai/OLMo-1B"
@@ -37,7 +40,7 @@ model = AutoModelForCausalLM.from_pretrained(
 model = prepare_model_for_kbit_training(model)
 
 lora_config = LoraConfig(
-    r=16,
+    r=8,
     lora_alpha=32,
     target_modules="all-linear",
     lora_dropout=0.05,
@@ -79,7 +82,7 @@ model.config.pad_token_id = tokenizer.eos_token_id
 training_args = TrainingArguments(
     output_dir="./olmo-1b-bbbp-qlora",
     per_device_train_batch_size=1,
-    gradient_accumulation_steps=32,
+    gradient_accumulation_steps=16,
     learning_rate=1e-4,
     max_steps=200,
     logging_steps=10,
