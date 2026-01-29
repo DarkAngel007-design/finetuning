@@ -25,6 +25,7 @@ tokenizer = AutoTokenizer.from_pretrained(
 bnb_config = BitsAndBytesConfig(
     load_in_8bit=True,
     llm_int8_threshold=6.0,
+    llm_int8_has_fp16_weight=False,
 )
 
 model = AutoModelForCausalLM.from_pretrained(
@@ -51,7 +52,7 @@ lora_config = LoraConfig(
 model = get_peft_model(model, lora_config)
 model.print_trainable_parameters()
 
-model.gradient_checkpointing_enable()
+# model.gradient_checkpointing_enable()
 model.config.use_cache = False
 
 dataset = load_dataset(
@@ -91,6 +92,7 @@ training_args = TrainingArguments(
     fp16=True,
     optim="adamw_torch",
     report_to="none",
+    gradient_checkpointing=True,
 )
 
 data_collator = DataCollatorForLanguageModeling(
