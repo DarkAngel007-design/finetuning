@@ -13,7 +13,6 @@ from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from datasets import load_dataset
 
 
-
 model_name = "allenai/OLMo-1B"
 
 tokenizer = AutoTokenizer.from_pretrained(
@@ -90,7 +89,7 @@ training_args = TrainingArguments(
     eval_strategy="steps",
     eval_steps=50,
     fp16=True,
-    optim="adamw_torch",
+    optim="paged_adamw_8bit",
     report_to="none",
     gradient_checkpointing=True,
 )
